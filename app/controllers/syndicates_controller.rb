@@ -69,6 +69,10 @@ class SyndicatesController < ApplicationController
     end
     get_user_info_from_userid
     @syndicates = Syndicate.all.order_by(syndicate_code: 1)
+    respond_to do |format|
+      format.html
+      format.csv { send_data @syndicates.to_csv, filename: "All Syndicate Coordinator-#{Date.today}.csv" }
+    end
   end
 
   def load(id)

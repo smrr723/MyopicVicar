@@ -140,4 +140,20 @@ class Syndicate
     userids
   end
 
+  def self.to_csv
+    attributes = %w{syndicate_code syndicate_coordinator email accepting_transcribers}
+
+    CSV.generate(headers: true) do |csv|
+      csv << attributes
+
+      all.each do |syndicate|
+        csv << attributes.map{ |attr| syndicate.send(attr) }
+      end
+    end
+  end
+
+  def email
+    "#{UseridDetail.where(userid: syndicate_coordinator).first.email_address}"
+  end
+
 end
