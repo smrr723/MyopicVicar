@@ -17,7 +17,7 @@ class SearchRecordsController < ApplicationController
   end
 
   def show
-     proceed = show_value_check
+    proceed = show_value_check
     if !proceed
       redirect_to new_search_query_path
       return
