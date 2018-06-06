@@ -69,16 +69,17 @@
     <%= stylesheet_link_tag "styles/scss/palm" %>
     <%= stylesheet_link_tag "styles/scss/lap_and_up", media:"(min-width:571px)" %>
     <!--[if (lt IE 9) & (!IEMobile)]>
-    <%= stylesheet_link_tag "styles/scss/lap_and_up" %>
+    <%#= stylesheet_link_tag "styles/scss/lap_and_up" %>
     <![endif]-->
     <!--[if lte IE 7]>
-    <%= stylesheet_link_tag "styles/scss/ie" %>
+    <%#= stylesheet_link_tag "styles/scss/ie" %>
     <![endif]-->
     <%= stylesheet_link_tag "styles/css/donate_icon" %>
     <%= stylesheet_link_tag "styles/css/freereg_content" %>
     <%= stylesheet_link_tag "styles/css/ladda.min" %>
     <%= stylesheet_link_tag "styles/css/donate_icon" %>
-    <%= javascript_include_tag "application" %>
+    <!-- Javascript -->
+    <%= javascript_include_tag "application.js" %>
     <%= javascript_include_tag "jquery.min.js" %>
     <%= javascript_include_tag "jquery.chained.remote.js" %>
     <%= javascript_include_tag "jquery.cookiesDirective.js" %>
@@ -88,23 +89,33 @@
    
     <%= csrf_meta_tags %>
     <% google_analytics_tracking_id = '' %>
-      <% if MyopicVicar::Application.config.template_set == 'freereg' %>
-        <% google_analytics_tracking_id = 'UA-62395250-1' %>
+    <% if MyopicVicar::Application.config.template_set == 'freereg' %>
+      <% google_analytics_tracking_id = 'UA-62395250-1' %>
 
-      <% elsif MyopicVicar::Application.config.template_set == 'freecen' %>
-        <% if MyopicVicar::MongoConfig["website"].eql? "https://freecen2.freecen.org.uk" %>
-        <% google_analytics_tracking_id = 'UA-89287207-1' %>
-        <% else %>
-        <%  google_analytics_tracking_id = "" %>
-        <% end %>
+    <% elsif MyopicVicar::Application.config.template_set == 'freecen' %>
+      <% if MyopicVicar::MongoConfig["website"].eql? "https://freecen2.freecen.org.uk" %>
+      <% google_analytics_tracking_id = 'UA-89287207-1' %>
+      <% else %>
+      <%  google_analytics_tracking_id = "" %>
       <% end %>
+    <% end %>
+
     <script>
       (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
       (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
       m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
       })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-      ga('create', '<%= google_analytics_tracking_id %>', 'auto');
-      ga('send', 'pageview');
+      window.update_third_party_cookies_user_preference = function (preference) {
+        if(preference == 'accept') {
+          ga('create', '<%= google_analytics_tracking_id %>', 'auto');
+        } else if(preference == 'deny') {
+          delete_cookie('_ga');
+          delete_cookie('_gid');
+          delete_cookie('_gat');
+          ga('create', '<%= google_analytics_tracking_id %>', {'storage': 'none', 'cookieExpires': 0 });
+        };
+        ga('send', 'pageview');
+      };
     </script>
   </head>
   <body ontouchstart class="offcanvas  offcanvas--rev">
@@ -115,36 +126,34 @@
       <%= render "layouts/header" %>
       
       <main  class="site__content  icon__honeycomb--top-right">
-      <div class="container">
-     
-      <% if session[:userid_detail_id].present?%>
-         <%= breadcrumbs  :class => "delta  text--teal"  unless controller_name == "refinery" ||
-         controller_name == "pages"%>
-      <% end%> 
-     
-        <% if content_for? :sidebar %>
-        <div class="grid">
-          <div class="grid__item  two-thirds  lap-three-fifths  palm-one-whole">
+        <div class="container">
+          <% if session[:userid_detail_id].present?%>
+             <%= breadcrumbs  :class => "delta  text--teal"  unless controller_name == "refinery" ||
+             controller_name == "pages"%>
+          <% end%>
+          <% if content_for? :sidebar %>
+            <div class="grid">
+              <div class="grid__item  two-thirds  lap-three-fifths  palm-one-whole">
+                <%= yield %>
+              </div>
+              <div class="grid__item  one-third  lap-two-fifths  palm-one-whole  push-half--top">
+                <%= yield :sidebar %>
+              </div>
+            </div>
+          <% else %>
             <%= yield %>
-          </div>
-          <div class="grid__item  one-third  lap-two-fifths  palm-one-whole  push-half--top">
-            <%= yield :sidebar %>
-          </div>
-        </div>
-        <% else %>
-        <%= yield %>
-        <% end %>
-        <% if  session[:userid_detail_id].present?%>
-        <div  style="float:left;">
-          <%= form_tag(problem_url, :method=>:get) do %>
-          <% problem_button_options.each_pair do |name, value| %>
-          <%= hidden_field_tag(name, value)%>
           <% end %>
-          <input type="submit" value="Report a Problem"  class = "btn  btn--small"/>
+          <% if  session[:userid_detail_id].present?%>
+            <div  style="float:left;">
+              <%= form_tag(problem_url, :method=>:get) do %>
+                <% problem_button_options.each_pair do |name, value| %>
+                  <%= hidden_field_tag(name, value)%>
+                <% end %>
+                <input type="submit" value="Report a Problem"  class = "btn  btn--small"/>
+              <% end %>
+            </div>
           <% end %>
         </div>
-        <% end %>
-      </div>
       </main>
       <%= render "layouts/footer" %>
     </div>
@@ -165,23 +174,23 @@
     </script> 
 
     <script type="text/javascript">
-    $(document).ready(function() {
-        $.cookiesDirective({
-            privacyPolicyUri:  "/cms/about/cookie-policy",
-            duration: 120,
-            <% if MyopicVicar::Application.config.template_set == 'freecen' %>
-              fontColor: '#FFFFFF', // font color for disclosure panel
-              backgroundColor: '#4A993E',
-              linkColor: '#ffff00',
-            <% else %>
-              fontColor: '#282828', // font color for disclosure panel
-              backgroundColor: '#f7a21c', //background color of disclosure panel
-              linkColor: ' #000080'// link color in disclosure panel
-            <% end %>
-            fontSize: '1.0rem', // font size for disclosure panel
-            backgroundOpacity: '99',
-        });
-    });
+      $(document).ready(function() {
+          $.cookiesDirective({
+              privacyPolicyUri:  "/cms/about/cookie-policy",
+              duration: 120,
+              <% if MyopicVicar::Application.config.template_set == 'freecen' %>
+                fontColor: '#FFFFFF', // font color for disclosure panel
+                backgroundColor: '#4A993E',
+                linkColor: '#ffff00',
+              <% else %>
+                fontColor: '#282828', // font color for disclosure panel
+                backgroundColor: '#f7a21c', //background color of disclosure panel
+                linkColor: ' #000080'// link color in disclosure panel
+              <% end %>
+              fontSize: '1.0rem', // font size for disclosure panel
+              backgroundOpacity: '99',
+          });
+      });
     </script>
   </body>
 </html>
