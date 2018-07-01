@@ -1,6 +1,6 @@
 <section>
   <p>
-      "England and Wales Census,<%=@cen_year %>" database, FreeCEN ([https://www.freecen.org.uk] : viewed <%=Date.today.strftime("%e %b %Y") %>),
+      "England and Wales Census,<%=@cen_year %>" database, FreeCEN ([https://www.freecen.org.uk] : viewed <%= @viewed_date %>), <%=@searched_user_name %> <% if !@is_family_head %> in household of <%= @family_head_name%> <% end %>    
   </p>
   <% if @dwelling %>
     <% hdr_labels = FreecenDwelling.dwelling_display_labels(@cen_year,@cen_chapman_code) %>

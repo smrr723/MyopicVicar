@@ -180,15 +180,29 @@ class SearchRecordsController < ApplicationController
 # implementation of the citation generator  
   def show_citation
     @page_number = params[:page_number].to_i
+    
     if params[:id].nil?
       redirect_to new_search_query_path
       return
     end
     
     @search_record = SearchRecord.record_id(params[:id]).first
-    
+    puts "this is name"
+    @search_record.inspect
+    puts "why it isn't working"
+    @searched_user_name = @search_record.transcript_names.first['first_name'] + " " + @search_record.transcript_names.first['last_name']
+    @viewed_date = Date.today.strftime("%e %b %Y")
     @individual = @search_record.freecen_individual
     @dwelling = @individual.freecen_dwelling if @individual
+    @is_family_head = false
+    @family_head_name = nil
+    #checks whether the head of the house is the same person searched for 
+    if @dwelling.freecen_individuals.asc(:sequence_in_household).first['forenames'].eql? @search_record.transcript_names.first['first_name'] 
+      @is_family_head = true
+    else
+      @family_head_name = @dwelling.freecen_individuals.asc(:sequence_in_household).first['forenames'] + " " + @dwelling.freecen_individuals.asc(:sequence_in_household).first['surname']
+    end
+    
     @cen_year = ' '
     @cen_piece = ' '
     @cen_chapman_code = ' '
