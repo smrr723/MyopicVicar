@@ -187,13 +187,12 @@ class SearchRecordsController < ApplicationController
     end
     
     @search_record = SearchRecord.record_id(params[:id]).first
-    puts "this is name"
-    @search_record.inspect
-    puts "why it isn't working"
     @searched_user_name = @search_record.transcript_names.first['first_name'] + " " + @search_record.transcript_names.first['last_name']
     @viewed_date = Date.today.strftime("%e %b %Y")
+      
     @individual = @search_record.freecen_individual
     @dwelling = @individual.freecen_dwelling if @individual
+    
     @is_family_head = false
     @family_head_name = nil
     #checks whether the head of the house is the same person searched for 
@@ -225,6 +224,16 @@ class SearchRecordsController < ApplicationController
       @cen_prev_dwelling = prev_next_dwellings[0]
       @cen_next_dwelling = prev_next_dwellings[1]
       @display_date = true
+      
+      @dweling_values = @dwelling.dwelling_display_values(@cen_year,@cen_chapman_code)
+      @user_address = @dweling_values[11] + ", " +  @dweling_values[2] + ", " +  @dweling_values[1].slice(0..(@dweling_values[1].index(' ')-1)) 
+
+      #census database description
+      @census_database = "England and Wales Census, "
+      if @search_record.place["country"].eql? "Scotland"
+        @census_database = "Scotland Census, "
+      end
+    @census_database += @cen_year
       render "_search_records_freecen_citation", :layout => false
       return
     end
@@ -260,10 +269,5 @@ class SearchRecordsController < ApplicationController
     @viewed_records << params[:id] unless @viewed_records.include?(params[:id])
     @search_result.update_attribute(:viewed_records, @viewed_records)
     render "show", :layout => false
-    
-    # puts "hey"
-    # puts @search_record.inspect
-    # puts @search_record
-    # render :text => "<ul><li>Done!</li></ul>".html_safe
   end  
 end
