@@ -24,6 +24,8 @@
     <ul class="citation-dropdown-list">
       <li><%= link_to "WikiTree", show_citation_record_path(@search_record, :search_id => @search_query, :citation_type => "wikitree"), :class => "btn  btn--small" , :target => "_blank" %></li>
       <li><%= link_to "Family Tree Maker", show_citation_record_path(@search_record, :search_id => @search_query, :citation_type => "familytreemaker"), :class => "btn  btn--small" , :target => "_blank" %></li>
+      <li><%= link_to "Legacy Family Tree", show_citation_record_path(@search_record, :search_id => @search_query, :citation_type => "legacyfamilytree"), :class => "btn  btn--small" , :target => "_blank" %></li>
+
     </ul>
   </div>
   

@@ -216,6 +216,7 @@ class SearchRecordsController < ApplicationController
 
       @searched_user_name = @search_record.transcript_names.first['first_name'] + " " + @search_record.transcript_names.first['last_name']
       @viewed_date = Date.today.strftime("%e %b %Y")
+      @viewed_year = Date.today.strftime("%Y")
       @is_family_head = false
       @family_head_name = nil
 
@@ -230,6 +231,8 @@ class SearchRecordsController < ApplicationController
         render "_search_records_freecen_citation_wikitree", :layout => false
       elsif params[:citation_type] == "familytreemaker"
         render "_search_records_freecen_citation_familytreemaker", :layout => false
+      elsif params[:citation_type] == "legacyfamilytree"
+        render "_search_records_freecen_citation_legacyfamilytree", :layout => false  
       end  
       return
     end
