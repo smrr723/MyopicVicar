@@ -22,7 +22,8 @@
   <div id="citation-dropdown" class="citation-dropdown text--center">
     <p>Please choose a citation type :</p>
     <ul class="citation-dropdown-list">
-      <li><%= link_to "Family Tree Maker", show_citation_record_path(@search_record, :search_id => @search_query), :class => "btn  btn--small" , :target => "_blank" %></li>
+      <li><%= link_to "WikiTree", show_citation_record_path(@search_record, :search_id => @search_query, :citation_type => "wikitree"), :class => "btn  btn--small" , :target => "_blank" %></li>
+      <li><%= link_to "Family Tree Maker", show_citation_record_path(@search_record, :search_id => @search_query, :citation_type => "familytreemaker"), :class => "btn  btn--small" , :target => "_blank" %></li>
     </ul>
   </div>
   
@@ -38,7 +39,6 @@
     /* When the user clicks on the button, 
     toggle between hiding and showing the dropdown content */
     function citationToggle() {
-      console.log("hi");
       var x = document.getElementById("citation-dropdown");
       
       if (x.style.display === "none") {

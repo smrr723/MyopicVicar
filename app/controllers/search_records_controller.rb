@@ -226,8 +226,11 @@ class SearchRecordsController < ApplicationController
         @family_head_name = @dwelling.freecen_individuals.asc(:sequence_in_household).first['forenames'] + " " + @dwelling.freecen_individuals.asc(:sequence_in_household).first['surname']
       end
 #   ------------------------ End of fields required for citation generation ------------------------
-
-      render "_search_records_freecen_citation", :layout => false
+      if params[:citation_type] == "wikitree"
+        render "_search_records_freecen_citation_wikitree", :layout => false
+      elsif params[:citation_type] == "familytreemaker"
+        render "_search_records_freecen_citation_familytreemaker", :layout => false
+      end  
       return
     end
     @printable_format = true;
