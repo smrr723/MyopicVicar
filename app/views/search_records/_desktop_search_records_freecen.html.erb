@@ -13,7 +13,42 @@
     <% else %>
     <%= link_to "Printable Format", show_print_version_search_record_path(@search_record, :search_id => @search_query), :class => "btn  btn--small"%>
     <% end %>
+    
+    <a id="citation-toggle" class="citation-toggle">
+    <span href="#" class="btn  btn--small">Generate Citation</span>
+    </a>
   </p>
+  
+  <div id="citation-dropdown" class="citation-dropdown text--center">
+    <p>Please choose a citation type :</p>
+    <ul class="citation-dropdown-list">
+      <li><%= link_to "Family Tree Maker", show_citation_record_path(@search_record, :search_id => @search_query), :class => "btn  btn--small" , :target => "_blank" %></li>
+    </ul>
+  </div>
+  
+  <style>
+    .citation-dropdown-list{
+      list-style-type: none;
+    }
+  </style>
+  
+  <script>
+    document.getElementById("citation-dropdown").style.display = "none";
+    document.getElementById("citation-toggle").addEventListener("click", citationToggle);
+    /* When the user clicks on the button, 
+    toggle between hiding and showing the dropdown content */
+    function citationToggle() {
+      console.log("hi");
+      var x = document.getElementById("citation-dropdown");
+      
+      if (x.style.display === "none") {
+          x.style.display = "block";
+      } else {
+          x.style.display = "none";
+      }
+    }
+    
+  </script>
 </section>
 <div class="adsense_center">
   <span>Advertisement</span>
@@ -172,6 +207,9 @@
   </table>
   <% end %>
 
-  <h5> If you believe there to be an error in this transcription then please <%= link_to "report", report_error_contact_path(@search_record, :query => @search_query), target: "_blank" %> it to our data manager (link opens in a new tab or window).</h5>
+    <h5> If you believe there to be an error in this transcription then please <%= link_to "report", report_error_contact_path(@search_record, :query => @search_query), target: "_blank" %> it to our data manager (link opens in a new tab or window).</h5>
+
 
 </section>
+
+

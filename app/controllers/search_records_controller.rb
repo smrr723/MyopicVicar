@@ -220,7 +220,7 @@ class SearchRecordsController < ApplicationController
       @family_head_name = nil
 
       #checks whether the head of the house is the same person searched for
-      if @dwelling.freecen_individuals.asc(:sequence_in_household).first['forenames'].eql? @search_record.transcript_names.first['first_name']
+      if @individual.individual_display_values(@cen_year,@cen_chapman_code)[2].eql? "Head"
         @is_family_head = true
       else
         @family_head_name = @dwelling.freecen_individuals.asc(:sequence_in_household).first['forenames'] + " " + @dwelling.freecen_individuals.asc(:sequence_in_household).first['surname']
