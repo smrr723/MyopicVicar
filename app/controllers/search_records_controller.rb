@@ -206,7 +206,18 @@ class SearchRecordsController < ApplicationController
 
 #   ------------------------ Fields required for citation generation ------------------------
       @user_address = @dweling_values[11] + ", " +  @dweling_values[2] + ", " +  @dweling_values[1].slice(0..(@dweling_values[1].index(' ')-1)) + ", " + @search_record.place["country"]
-
+      
+      #evidence explained
+      @piece = @dweling_values[5]
+      @place = @dweling_values[2]
+      @enumeration_district = @dweling_values[6]
+      @civil_parish = @dweling_values[3]
+      @ecclesiastical_parish = @dweling_values[4]
+      @folio = @dweling_values[7]
+      @page = @dweling_values[8]
+      @schedule = @dweling_values[9]
+      @ee_address = @dweling_values[11]
+      
       #census database description
       @census_database = "England and Wales Census, "
       if @search_record.place["country"].eql? "Scotland"
@@ -217,6 +228,7 @@ class SearchRecordsController < ApplicationController
       @searched_user_name = @search_record.transcript_names.first['first_name'] + " " + @search_record.transcript_names.first['last_name']
       @viewed_date = Date.today.strftime("%e %b %Y")
       @viewed_year = Date.today.strftime("%Y")
+      
       @is_family_head = false
       @family_head_name = nil
 
@@ -233,6 +245,18 @@ class SearchRecordsController < ApplicationController
         render "_search_records_freecen_citation_familytreemaker", :layout => false
       elsif params[:citation_type] == "legacyfamilytree"
         render "_search_records_freecen_citation_legacyfamilytree", :layout => false  
+      elsif params[:citation_type] == "mla"
+        @mla_date = Date.today.strftime("%a. %e %B. %Y.")
+        render "_search_records_freecen_citation_mla", :layout => false
+      elsif params[:citation_type] == "chicago"
+        @chicago_date = Date.today.strftime("%B %e, %Y")
+        render "_search_records_freecen_citation_chicago", :layout => false
+      elsif params[:citation_type] == "evidenceexplained"
+        @viewed_date = Date.today.strftime("%e %B %Y")
+        render "_search_records_freecen_citation_evidenceexplained", :layout => false
+      elsif params[:citation_type] == "wikipedia"
+        @viewed_date = Date.today.strftime("%e %B %Y")
+        render "_search_records_freecen_citation_wikipedia", :layout => false  
       end  
       return
     end
