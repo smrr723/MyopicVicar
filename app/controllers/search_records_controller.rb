@@ -205,7 +205,18 @@ class SearchRecordsController < ApplicationController
       @dweling_values = @dwelling.dwelling_display_values(@cen_year,@cen_chapman_code)
 
 #   ------------------------ Fields required for citation generation ------------------------
-      @user_address = @dweling_values[11] + ", " +  @dweling_values[2] + ", " +  @dweling_values[1].slice(0..(@dweling_values[1].index(' ')-1)) + ", " + @search_record.place["country"]
+      @user_address = ""
+      unless @dweling_values[11] == "-" || @dweling_values[11].nil? || @dweling_values[11].empty?
+        @user_address += @dweling_values[11]  + ", "
+      end
+      unless @dweling_values[2] == "-" || @dweling_values[2].nil? || @dweling_values[2].empty?
+        @user_address += @dweling_values[2]  + ", "
+      end
+      @county = @dweling_values[1].slice(0..(@dweling_values[1].index(' ')-1))
+      unless @county == "-" || @county.nil? || @county.empty?
+        @user_address += @county  + ", "
+      end
+      @user_address += @search_record.place["country"] 
       
       #evidence explained
       @piece = @dweling_values[5]
@@ -246,7 +257,7 @@ class SearchRecordsController < ApplicationController
       elsif params[:citation_type] == "legacyfamilytree"
         render "_search_records_freecen_citation_legacyfamilytree", :layout => false  
       elsif params[:citation_type] == "mla"
-        @mla_date = Date.today.strftime("%a. %e %B. %Y.")
+        @viewed_date = Date.today.strftime("%a. %e %B. %Y")
         render "_search_records_freecen_citation_mla", :layout => false
       elsif params[:citation_type] == "chicago"
         @chicago_date = Date.today.strftime("%B %e, %Y")
