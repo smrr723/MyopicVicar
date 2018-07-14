@@ -133,6 +133,25 @@ class SearchRecordsController < ApplicationController
         if params[:citation_type] == "wikitree"
           @viewed_date = Date.today.strftime("%e %b %Y")
           format.html {render "_search_records_freecen_citation_wikitree", :layout => false}
+        elsif params[:citation_type] == "familytreemaker"
+          @viewed_date = Date.today.strftime("%e %B %Y")
+          format.html {render "_search_records_freecen_citation_familytreemaker", :layout => false}  
+          format.html {render "_search_records_freecen_citation_wikitree", :layout => false}
+        elsif params[:citation_type] == "legacyfamilytree"
+          @viewed_date = Date.today.strftime("%e %b %Y")
+          format.html {render "_search_records_freecen_citation_legacyfamilytree", :layout => false}  
+        elsif params[:citation_type] == "mla"
+          @viewed_date = Date.today.strftime("%a. %e %B. %Y")
+          format.html {render "_search_records_freecen_citation_mla", :layout => false}
+        elsif params[:citation_type] == "chicago"
+          @viewed_date = Date.today.strftime("%B %e, %Y")
+          format.html {render "_search_records_freecen_citation_chicago", :layout => false}  
+        elsif params[:citation_type] == "wikipedia"
+          @viewed_date = Date.today.strftime("%e %b %Y")
+          format.html {render "_search_records_freecen_citation_wikipedia", :layout => false}  
+        elsif params[:citation_type] == "evidenceexplained"
+          @viewed_date = Date.today.strftime("%e %B %Y")
+          format.html {render "_search_records_freecen_citation_evidenceexplained", :layout => false}  
         end  
       end
     end
