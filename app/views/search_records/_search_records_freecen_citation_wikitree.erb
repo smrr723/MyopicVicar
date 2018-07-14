@@ -1,0 +1,8 @@
+<section>
+  <p>
+      <%=@entry['place']%> : <%=@entry['church_name']%> : <%unless @entry['register_type'].include? "Unspecified"%><%=@entry['register_type']%> :<% end %> "Parish Register" database, 
+      FreeREG ([https:www.freereg.org.uk]: viewed <%=@viewed_date%>) 
+      <%=record_type(@entry).downcase%> <%=@entry['person_forename'].titleize%> <%=@entry['father_surname'].titleize%> 
+      <%=@entry['baptism_date'].titleize%>
+  </p>
+</section>

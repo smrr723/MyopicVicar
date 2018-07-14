@@ -113,4 +113,28 @@ class SearchRecordsController < ApplicationController
     session[:viewed] ||= []
   end
 
+# implementation of the citation generator
+  def show_citation
+    proceed = show_value_check
+    if !proceed
+      redirect_to new_search_query_path
+      return
+    else
+      @printable_format = true
+      @display_date = true
+      @all_data = true
+      @entry.display_fields(@search_record)
+      @entry.acknowledge
+      @place_id,@church_id,@register_id = @entry.get_location_ids
+      @annotations = Annotation.find(@search_record[:annotation_ids]) if @search_record[:annotation_ids]
+      @search_result = @search_query.search_result
+      @order,@array_of_entries, @json_of_entries = @entry.order_fields_for_record_type(@search_record[:record_type]) 
+      respond_to do |format|
+        if params[:citation_type] == "wikitree"
+          @viewed_date = Date.today.strftime("%e %b %Y")
+          format.html {render "_search_records_freecen_citation_wikitree", :layout => false}
+        end  
+      end
+    end
+  end
 end
