@@ -43,6 +43,9 @@ class UseridDetail
   field :no_processing_messages, type: Boolean, default: false
   field :userid_messages,type: Array, default: []
   field :reason_for_invalidating,type: String
+  field :new_transcription_agreement, type: String, default: "Unknown"
+  field :email_address_validity_change_message, type: Array, default: []
+  field :secondary_role, type: Array, default: []
 
   attr_accessor :action, :message, :volunteer_induction_handbook, :code_of_conduct
   index({ email_address: 1 })
@@ -56,10 +59,14 @@ class UseridDetail
   has_many :assignments
 
   validates_presence_of :userid,:syndicate,:email_address, :person_role, :person_surname, :person_forename,
-    :skill_level #,:transcription_agreement
+    :skill_level #,:new_transcription_agreement
   validates_format_of :email_address,:with => Devise::email_regexp
   validate :userid_and_email_address_does_not_exist, :transcription_agreement_must_accepted, on: :create
+<<<<<<< HEAD
   validate :email_address_does_not_exist,  on: :update#:transcription_agreement_accept, on: :update
+=======
+  validate :email_address_does_not_exist, on: :update
+>>>>>>> master
   validates :volunteer_induction_handbook, :code_of_conduct, acceptance: true
 
   before_create :add_lower_case_userid,:capitalize_forename, :captilaize_surname, :transcription_agreement_value_change
@@ -92,6 +99,18 @@ class UseridDetail
     end
     def email_address_valid
       where(:email_address_valid => true)
+    end
+
+    def transcription_agreement(transcription_agreement)
+      where(:transcription_agreement => transcription_agreement)
+    end
+
+    def new_transcription_agreement(new_transcription_agreement)
+      if new_transcription_agreement == "All"
+        where(new_transcription_agreement: { '$in': SentMessage::ACTUAL_STATUS_MESSAGES } )
+      else
+        where(new_transcription_agreement: new_transcription_agreement)
+      end
     end
   end
 
@@ -269,6 +288,7 @@ class UseridDetail
     self.email_address_last_confirmned = self.sign_up_date
     self.email_address_valid= true
     self.email_address_last_confirmned = Time.new
+    #self.new_transcription_agreement = "Unknown"
   end
 
   def add_lower_case_userid
@@ -451,11 +471,7 @@ class UseridDetail
   end
 
   def list_incomplete_registrations current_user, current_syndicate
-    if current_syndicate == 'all'
-      @users = list_all_users
-    else
-      @users = get_users(current_syndicate)
-    end
+    @users = get_users_by_syndicate(current_syndicate)
     filter_users
   end
 
@@ -467,6 +483,38 @@ class UseridDetail
     user.password != registered_password
   end
 
+  def incomplete_registration_user_lists(current_syndicate, active)
+    syndicate_users = get_users_by_syndicate(current_syndicate)
+    if active.nil?
+      @users = syndicate_users
+    elsif active
+      @users = syndicate_users.where(active: true)
+    else
+      @users = syndicate_users.where(active: false)
+    end
+    active_lists(get_user_ids)
+  end
+
+  def active_incomplete_registration_list
+    @users = list_all_users
+    active_incomplete_registrations = Array.new
+    filter_users.each { |usr|
+      next if !usr.active
+      active_incomplete_registrations << usr.userid
+    }
+    active_incomplete_registrations
+  end
+
+  def active_lists(user_lists)
+    original_stdout = STDOUT.clone
+    file_name = "active_incomplete_registrations"
+    ApplicationController.helpers.delete_file_if_exists(file_name)
+    STDOUT.reopen(ApplicationController.helpers.new_file(file_name), "w")
+    puts user_lists
+    STDOUT.reopen(original_stdout)
+    puts "Total number of ids: #{user_lists.count}"
+  end
+
   private
 
   def filter_users
@@ -474,7 +522,7 @@ class UseridDetail
     @users.each { |user|
       next if registration_completed(user)
       @incompleted_registration_users << user
-    }    
+    }
     @incompleted_registration_users
   end
 
@@ -483,13 +531,26 @@ class UseridDetail
   end
 
   def list_all_users
-    self.class.only(:_id, :userid, :password, :person_forename, :person_surname, :email_address, :syndicate)
+    self.class.only(:_id, :userid, :password, :person_forename, :person_surname, :email_address, :syndicate, :active)
   end
 
-  def get_users(current_syndicate)
-    Syndicate.get_users_for_syndicate(current_syndicate)
+  def get_users_by_syndicate(current_syndicate)
+    if current_syndicate == 'all'
+      list_all_users
+    else
+      self.class.syndicate(current_syndicate)
+    end
   end
 
+  def get_user_ids
+    filter_users.map{ |x| x[:userid] }
+  end
+
+  def transcription_agreement_must_accepted
+    errors.add(:base, "Transcription agreement must be accepted") if self.new_transcription_agreement == "0"
+  end
+
+<<<<<<< HEAD
   def transcription_agreement_must_accepted
     errors.add(:base, "Transcription agreement must be accepted") if self.transcription_agreement == "0"
   end
@@ -506,4 +567,13 @@ class UseridDetail
     errors.add(:base, "Transcription agreement must be accepted") if self.transcription_agreement != "Accepted"
   end
 
+=======
+  def transcription_agreement_value_change
+    if self.new_transcription_agreement == "1"
+      self.new_transcription_agreement = 'Accepted'
+    elsif self.new_transcription_agreement == 0
+      self.new_transcription_agreement = 'Declined'
+    end
+  end
+>>>>>>> master
 end #end class
