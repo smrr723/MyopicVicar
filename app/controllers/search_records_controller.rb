@@ -17,7 +17,6 @@ class SearchRecordsController < ApplicationController
 
 
   def show
-<<<<<<< HEAD
     @page_number = params[:page_number].to_i
     if params[:id].nil?
       redirect_to new_search_query_path
@@ -50,10 +49,6 @@ class SearchRecordsController < ApplicationController
     end
     if params[:search_id].nil? || @search_record.nil?
       flash[:notice] = "Prior records no longer exist"
-=======
-    if params[:search_id].nil? || params[:id].nil?
-      flash[:notice] = "Prior records no longer exist, if this continues please let us know"
->>>>>>> master
       redirect_to new_search_query_path
       return
     end
@@ -63,30 +58,13 @@ class SearchRecordsController < ApplicationController
         @previous_record = @search_query.previous_record(params[:id])
         @next_record = @search_query.next_record(params[:id])
       end
-<<<<<<< HEAD
     rescue Mongoid::Errors::DocumentNotFound
-=======
-      if @search_record.nil?
-        flash[:notice] = "Prior records no longer exist, if this continues please let us know"
-        redirect_to new_search_query_path
-        return
-      end
-      if @search_record[:freereg1_csv_entry_id].present? 
-        @entry = Freereg1CsvEntry.find(@search_record[:freereg1_csv_entry_id]) 
-      else
-       log_missing_document("entry for search record",@search_record[:id], @search_query.id)
-        flash[:notice] = "We encountered a problem locating that original entry, if this continues please let us know"
-        redirect_to new_search_query_path
-        return
-      end
-    rescue Mongoid::Errors::DocumentNotFound 
->>>>>>> master
       log_possible_host_change
       redirect_to new_search_query_path
       return
     rescue Mongoid::Errors::InvalidFind
-       log_missing_document("entry for search record",@search_record[:id], @search_query.id)
-      flash[:notice] = "We encountered a problem locating that original entry, if this continues please let us know"
+      log_missing_document("entry for search record",@search_record[:freereg1_csv_entry_id],@search_record.id)
+      flash[:notice] = "We encountered a problem locating that original entry"
       redirect_to new_search_query_path
       return
     end
@@ -135,13 +113,8 @@ class SearchRecordsController < ApplicationController
       return
     end
     @printable_format = true;
-<<<<<<< HEAD
     if params[:search_id].nil? || @search_record.nil?
       flash[:notice] = "Prior records no longer exist"
-=======
-    if params[:search_id].nil? || params[:id].nil?
-      flash[:notice] = "Prior records no longer exist, if this continues please let us know"
->>>>>>> master
       redirect_to new_search_query_path
       return
     end
@@ -152,7 +125,6 @@ class SearchRecordsController < ApplicationController
         @previous_record = @search_query.previous_record(params[:id])
         @next_record = @search_query.next_record(params[:id])
       end
-<<<<<<< HEAD
 # =======
     # if params[:search_id].nil? || params[:id].nil?
       # flash[:notice] = "Prior records no longer exist"
@@ -173,21 +145,13 @@ class SearchRecordsController < ApplicationController
       # end
       # @entry = Freereg1CsvEntry.find(@search_record[:freereg1_csv_entry_id])
 # >>>>>>> master
-=======
-      if @search_record.nil?
-        flash[:notice] = "Prior records no longer exist, if this continues please let us know"
-        redirect_to new_search_query_path
-        return
-      end
-      @entry = Freereg1CsvEntry.find(@search_record[:freereg1_csv_entry_id])
->>>>>>> master
     rescue Mongoid::Errors::DocumentNotFound
       log_possible_host_change
       redirect_to new_search_query_path
       return
     rescue Mongoid::Errors::InvalidFind
-    log_missing_document("entry for search record",@search_record[:id], @search_query.id)
-      flash[:notice] = "We encountered a problem locating that original entry, if this continues please let us know"
+      log_missing_document("entry for search record",@search_record[:freereg1_csv_entry_id],@search_record.id)
+      flash[:notice] = "We encountered a problem locating that original entry"
       redirect_to new_search_query_path
       return
     end

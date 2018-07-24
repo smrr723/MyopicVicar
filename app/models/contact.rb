@@ -94,18 +94,11 @@ class Contact
 
   def communicate_website_problem
     ccs = Array.new
-<<<<<<< HEAD
     selected_coord = get_coordinator_for_selected_county
     ccs << selected_coord.email_address unless selected_coord.nil?
     UseridDetail.where(:person_role => 'contacts_coordinator', :email_address_valid => true).all.each do |person|
-=======
-    UseridDetail.any_of({ person_role: "website_coordinator", email_address_valid: true}, secondary_role: { '$in': ["website_coordinator"] }).all.each do |person|
->>>>>>> master
       ccs << person.email_address
     end
-    #UseridDetail.where(:person_role => 'contacts_coordinator', :email_address_valid => true).all.each do |person|
-     # ccs << person.email_address
-    #end
     if ccs.blank?
       UseridDetail.where(:person_role => 'system_administrator', :email_address_valid => true).all.each do |person|
         ccs << person.email_address
@@ -149,21 +142,14 @@ class Contact
 
   def communicate_publicity
     ccs = Array.new
-<<<<<<< HEAD
     selected_coord = get_coordinator_for_selected_county
     ccs << selected_coord.email_address unless selected_coord.nil?
     UseridDetail.where(:person_role => 'publicity_coordinator', :email_address_valid => true).all.each do |person|
       ccs << person.email_address
     end
     UseridDetail.where(:person_role => 'contacts_coordinator', :email_address_valid => true).all.each do |person|
-=======
-    UseridDetail.any_of({ person_role: "publicity_coordinator", email_address_valid: true}, secondary_role: { '$in': ["publicity_coordinator"] }).all.each do |person|
->>>>>>> master
       ccs << person.email_address
     end
-    #UseridDetail.where(:person_role => 'contacts_coordinator', :email_address_valid => true).all.each do |person|
-     # ccs << person.email_address
-    #end
     if ccs.blank?
       UseridDetail.where(:person_role => 'system_administrator', :email_address_valid => true).all.each do |person|
         ccs << person.email_address
@@ -174,21 +160,14 @@ class Contact
 
   def communicate_genealogical_question
     ccs = Array.new
-<<<<<<< HEAD
     selected_coord = get_coordinator_for_selected_county
     ccs << selected_coord.email_address unless selected_coord.nil?
     UseridDetail.where(:person_role => 'genealogy_coordinator', :email_address_valid => true).all.each do |person|
       ccs << person.email_address
     end
     UseridDetail.where(:person_role => 'contacts_coordinator', :email_address_valid => true).all.each do |person|
-=======
-    UseridDetail.any_of({ person_role: "genealogy_coordinator", email_address_valid: true}, secondary_role: { '$in': ["genealogy_coordinator"] }).all.each do |person|
->>>>>>> master
       ccs << person.email_address
     end
-    #UseridDetail.where(:person_role => 'contacts_coordinator', :email_address_valid => true).all.each do |person|
-    #  ccs << person.email_address
-    #end
     if ccs.blank?
       UseridDetail.where(:person_role => 'system_administrator', :email_address_valid => true).all.each do |person|
         ccs << person.email_address
@@ -199,13 +178,9 @@ class Contact
 
   def communicate_enhancement_suggestion
     ccs = Array.new
-<<<<<<< HEAD
     selected_coord = get_coordinator_for_selected_county
     ccs << selected_coord.email_address unless selected_coord.nil?
     UseridDetail.where(:person_role => 'contacts_coordinator', :email_address_valid => true).all.each do |person|
-=======
-    UseridDetail.any_of({ person_role: 'website_coordinator', email_address_valid: true}, secondary_role: { '$in': ["website_coordinator"] }).all.each do |person|
->>>>>>> master
       ccs << person.email_address
     end
     UseridDetail.where(:person_role => 'project_manager', :email_address_valid => true).all.each do |person|
@@ -221,21 +196,14 @@ class Contact
 
   def communicate_volunteering
     ccs = Array.new
-<<<<<<< HEAD
     selected_coord = get_coordinator_for_selected_county
     ccs << selected_coord.email_address unless selected_coord.nil?
     UseridDetail.where(:person_role => 'volunteer_coordinator', :email_address_valid => true).all.each do |person|
       ccs << person.email_address
     end
     UseridDetail.where(:person_role => 'contacts_coordinator', :email_address_valid => true).all.each do |person|
-=======
-    UseridDetail.any_of({ person_role: "volunteer_coordinator", email_address_valid: true}, secondary_role: { '$in': ["volunteer_coordinator"] }).all.each do |person|
->>>>>>> master
       ccs << person.email_address
     end
-    #UseridDetail.where(:person_role => 'contacts_coordinator', :email_address_valid => true).all.each do |person|
-     # ccs << person.email_address
-    #end
     if ccs.blank?
       UseridDetail.where(:person_role => 'system_administrator', :email_address_valid => true).all.each do |person|
         ccs << person.email_address
@@ -246,18 +214,11 @@ class Contact
 
   def communicate_general
     ccs = Array.new
-<<<<<<< HEAD
     selected_coord = get_coordinator_for_selected_county
     ccs << selected_coord.email_address unless selected_coord.nil?
     UseridDetail.where(:person_role => 'contacts_coordinator', :email_address_valid => true).all.each do |person|
-=======
-    UseridDetail.any_of({ person_role: "general_communication_coordinator", email_address_valid: true}, secondary_role: { '$in': ["general_communication_coordinator"] }).all.each do |person|
->>>>>>> master
       ccs << person.email_address
     end
-    #UseridDetail.where(:person_role => 'contacts_coordinator', :email_address_valid => true).all.each do |person|
-      #ccs << person.email_address
-    #end
     if ccs.blank?
       UseridDetail.where(:person_role => 'system_administrator', :email_address_valid => true).all.each do |person|
         ccs << person.email_address
@@ -334,5 +295,5 @@ class Contact
     self.previous_page_url = "unknown" if self.previous_page_url.nil?
   end
 
-  
+
 end

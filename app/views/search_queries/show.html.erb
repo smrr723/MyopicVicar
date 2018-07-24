@@ -103,21 +103,12 @@
       <% end %>
       <% if @result_count > 0 && @result_count <= FreeregOptionsConstants::MAXIMUM_NUMBER_OF_RESULTS %>
         <div class="read-length push--bottom" style="margin-left: auto; margin-right: auto;">
-<<<<<<< HEAD
           <br>
           <% unless defined?(@printable_format) && @printable_format %>
             <center><a href="https://www.freeukgenealogy.org.uk/help-us-keep-history-free/" class="freeCEN" id="donate"><%= DonateIconHelper::DONATE_ICON.html_safe %></a></center>
             <p class="push-half--bottom">While most other genealogy sites charge you to find and read records, <b><%= MyopicVicar::Application.config.freexxx_display_name %></b> is dedicated to keeping our searches free. A small donation towards our costs would really help us keep it that way. </p>
           <% end %>
         </div>
-=======
-            <br>
-            <% unless defined?(@printable_format) && @printable_format %>
-              <center><a href="https://www.freeukgenealogy.org.uk/help-us-keep-history-free/" class="freeREG" id="donate"><%= DonateIconHelper::DONATE_ICON.html_safe %></a></center>
-             <p class="push-half--bottom">While most other genealogy sites charge you to find and read records, <b>FreeReg</b> is dedicated to keeping our searches free. A small donation towards our costs would really help us keep it that way. </p>
-            <% end %>
-          </div>
->>>>>>> master
       <% end %>
     <% end %>
   </section>

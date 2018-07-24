@@ -144,10 +144,9 @@ module ApplicationHelper
     dist
   end
 
-  def fullwidth_adsense
+  def display_banner
     banner = <<-HTML
     <style>
-<<<<<<< HEAD
       .adSenseBanner { width: 320px; height: 100px; }
       @media(min-width: 500px) { .adSenseBanner { width: 468px; height: 60px; } }
       @media(min-width: 800px) { .adSenseBanner { width: 728px; height: 90px; } }
@@ -247,21 +246,6 @@ module ApplicationHelper
     <script>
       $(document).ready(function(){(adsbygoogle = window.adsbygoogle || []).push({})})
     </script>
-=======
-        .adSenseBanner { width: 320px; height: 100px; text-align: center; margin: auto;}
-        @media(min-width: 500px) { .adSenseBanner { width: 728px; height: 90px; text-align: center; margin: auto; } }
-        @media(min-width: 800px) { .adSenseBanner { width: 728px; height: 90px; text-align: center; margin: auto; } }
-    </style>
-      <script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-        <ins class="adsbygoogle adSenseBanner"
-             style="display:block"
-             data-ad-client="ca-pub-7825403497160061"
-             data-ad-slot="8870759291"
-             data-ad-format="auto"></ins>
-      <script>
-        $(document).ready(function(){(adsbygoogle = window.adsbygoogle || []).push({})});
-      </script>
->>>>>>> master
     HTML
     if Rails.env.development?
      banner = <<-HTML
@@ -295,7 +279,6 @@ module ApplicationHelper
     Rails.application.config.respond_to?(:ucf_support) && Rails.application.config.ucf_support
   end
 
-<<<<<<< HEAD
   def sum_calculation(piece_hash)
     count_array = Array.new
     piece_hash.each{ |e|
@@ -316,43 +299,3 @@ module ApplicationHelper
     array.inject(0){|sum,x| sum + x }
   end
 end
-=======
-  def valid_directory?
-    File.directory?(output_directory_path)
-  end
-
-  # Create a new file named as current date and time
-  def new_file(name)
-    raise "Not a Valid Directory" unless valid_directory?
-
-    file_name = "#{Time.now.strftime("%Y%m%d%H%M%S")}_#{name}.txt"
-    "#{output_directory_path}/#{file_name}"
-  end
-
-  # Set an output directory
-  # If there is no ouput directory, then set the default
-  # else check the trailing slash at the end of the directory
-  def output_directory_path
-    if @output_directory.nil?
-      directory = File.join(Rails.root, 'script')
-    else
-      directory = File.join(@output_directory, "")
-    end
-    directory
-  end
-
-  def delete_file_if_exists(name)
-    File.delete(*Dir.glob("#{output_directory_path}/*_#{name}.txt"))
-  end
-
-  def to_boolean(value)
-    case value
-    when true, 'true', 1, '1', 't' then true
-    when false, 'false', nil, '', 0, '0', 'f' then false
-    when nil, "nil" then nil
-    else
-      raise ArgumentError, "invalid value for Boolean(): \"#{value.inspect}\""
-    end
-  end
-end
->>>>>>> master

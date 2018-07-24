@@ -455,21 +455,12 @@ GEM
       actionpack (>= 3.0)
       activesupport (>= 3.0)
       railties (>= 3.0)
-<<<<<<< HEAD
       rspec-core (~> 3.6.0)
       rspec-expectations (~> 3.6.0)
       rspec-mocks (~> 3.6.0)
       rspec-support (~> 3.6.0)
     rspec-support (3.6.0)
     rubyzip (0.9.9)
-=======
-      rspec-core (~> 3.5.0)
-      rspec-expectations (~> 3.5.0)
-      rspec-mocks (~> 3.5.0)
-      rspec-support (~> 3.5.0)
-    rspec-support (3.5.0)
-    rubyzip (1.2.1)
->>>>>>> master
     sass (3.4.23)
     sass-rails (5.0.6)
       railties (>= 4.0.0, < 6)
@@ -564,7 +555,7 @@ DEPENDENCIES
   refinerycms-county_pages!
   refinerycms-wymeditor (~> 1.0, >= 1.0.6)
   rspec-rails
-  rubyzip (~> 1.2)
+  rubyzip (~> 0.9.9)
   sass-rails
   simple_form
   text

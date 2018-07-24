@@ -1,17 +1,11 @@
 <header class="site__header" >
   <div class="container">
-<<<<<<< HEAD
     <% unless current_page?('/cms/refinery/login') || current_page?('/cms/home/page-not-found') || current_page?('/cms/refinery/users/login')%>
       <div class="banner-horz">
         <% unless device_type == :mobile%>
           <%= display_banner %>
           <%= banner_header %>
         <% end %>
-=======
-    <% unless current_page?('/cms/refinery/login') || current_page?('/cms/freereg2/page-not-found')%>
-      <div class="banner-horz">
-        <%= fullwidth_adsense %>
->>>>>>> master
       </div>
     <% end %>
     <button type="button" id="trigger-offcanvas" class="site__header__menu-btn">

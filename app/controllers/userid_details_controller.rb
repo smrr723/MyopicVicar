@@ -1,5 +1,4 @@
 class UseridDetailsController < ApplicationController
-  include ActiveModel::Dirty
   require 'userid_role'
   require 'import_users_from_csv'
   skip_before_filter :require_login, only: [:general, :create,:researcher_registration, :transcriber_registration,:technical_registration]
@@ -171,11 +170,7 @@ class UseridDetailsController < ApplicationController
     @userid.finish_technical_creation_setup if params[:commit] == 'Technical Registration'
     case
     when  params[:commit] == 'Register as Transcriber'
-<<<<<<< HEAD
       redirect_to "/cms/opportunities-to-volunteer-with-freecen/welcome-to-freecen" and return
-=======
-      redirect_to transcriber_registration_userid_detail_path and return
->>>>>>> master
     when params[:commit] == "Submit" && session[:userid_detail_id].present?
       redirect_to userid_detail_path(@userid) and return
     when params[:commit] == "Update" && session[:my_own]
@@ -198,11 +193,7 @@ class UseridDetailsController < ApplicationController
     when params[:commit] == 'Register as Transcriber'
       @syndicates = Syndicate.get_syndicates_open_for_transcription
       @userid[:honeypot] = session[:honeypot]
-<<<<<<< HEAD
      # @transcription_agreement = [true,false]
-=======
-      #@new_transcription_agreement = ["Unknown","Accepted","Declined","Requested"]
->>>>>>> master
       render :action => 'transcriber_registration' and return
     when params[:commit] == 'Technical Registration'
       render :action => 'technical_registration' and return
@@ -404,7 +395,7 @@ class UseridDetailsController < ApplicationController
       @userid = UseridDetail.new
       @userid[:honeypot] = session[:honeypot]
       @syndicates = Syndicate.get_syndicates_open_for_transcription
-      @new_transcription_agreement = ["Unknown","Accepted","Declined","Requested"]
+      @transcription_agreement = [true,false]
       @first_name = session[:first_name]
     else
       #we set the mongo_config.yml member open flag. true is open. false is closed We do allow technical people in
@@ -420,8 +411,6 @@ class UseridDetailsController < ApplicationController
 
   def update
     load(params[:id])
-    #raise (email_value_changed).inspect
-    #raise (userid_details_params[:email_address_valid].changed?).inspect
     changed_syndicate = @userid.changed_syndicate?(params[:userid_detail][:syndicate])
     changed_email_address = @userid.changed_email?(params[:userid_detail][:email_address])
     success = Array.new
@@ -445,15 +434,8 @@ class UseridDetailsController < ApplicationController
         return
       end
     end
-    email_valid_change_message
     params[:userid_detail][:email_address_last_confirmned] = ['1', 'true'].include?(params[:userid_detail][:email_address_valid]) ? Time.now : ''
-<<<<<<< HEAD
     @userid.update_attributes(userid_details_params.except(:userid))
-=======
-    #    params[:userid_detail][:email_address_valid]  = true
-    
-    @userid.update_attributes(userid_details_params)
->>>>>>> master
     @userid.write_userid_file
     @userid.save_to_refinery
     if !@userid.errors.any? && success[0]
@@ -532,10 +514,10 @@ class UseridDetailsController < ApplicationController
       error_text = error_text+"USERID: "+params[:userid_detail][:userid]+"\r\n"
       error_text = error_text+"FORENAME: "+params[:userid_detail][:person_forename]+"\r\n"
       error_text = error_text+"SURNAME: "+params[:userid_detail][:person_surname] + "\r\n"
-      error_text = error_text+"REMOE ADDR: "+request.remote_addr + "\r\n" if request.present? && request.remote_addr.present?
-      error_text = error_text+"REMOE ADDR: Unknown \r\n" unless request.present? && request.remote_addr.present?
+      error_text = error_text+"REMOE ADDR: "+request.remote_addr + "\r\n" if request.present? && request.remote_add.present?
+      error_text = error_text+"REMOE ADDR: Unknown \r\n" unless request.present? && request.remote_add.present?
       error_text = error_text+"REMOTE IP: "+request.remote_ip + "\r\n" if request.present? && request.remote_ip.present?
-      error_text = error_text+"REMOE IP: Unknown \r\n" unless request.present? && request.remote_ip.present?
+      error_text = error_text+"REMOE IP: Unknown \r\n" unless request.present? && request.remote_id.present?
       error_text = error_text+"REMOTE HOST: "+request.remote_host+"\r\n\r\n\r\n" if request.present? && request.remote_host.present?
       error_text = error_text+"REMOE HOST: Unknown \r\n" unless request.present? && request.remote_host.present?
       f.puts error_text
@@ -552,30 +534,4 @@ class UseridDetailsController < ApplicationController
   def get_option_parameter(option, location)
     location += '+"&option=' + option +'"'
   end
-<<<<<<< HEAD
-=======
-
-  def email_value_changed
-    @userid.email_address_valid.to_s != userid_details_params[:email_address_valid]
-  end
-
-  def email_valid_change_message
-    if email_value_changed
-      message = @userid.email_address_validity_change_message
-      case userid_details_params[:email_address_valid]
-      when "true"
-        raise "hello"
-        message << "VALID on #{Time.now.utc.strftime("%B %d, %Y")} at #{Time.now.utc.strftime("%H:%M:%S")}"
-      else
-        message << "INVALID on #{Time.now.utc.strftime("%B %d, %Y")} at #{Time.now.utc.strftime("%H:%M:%S")}"
-      end
-      @userid.update_attribute(:email_address_validity_change_message, message)
-    end
-  end
-
-  def email_valid_change
-    @userid.email_address_valid == true ? "Valid" : "Invalid" 
-  end
-
->>>>>>> master
 end
