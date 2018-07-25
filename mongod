@@ -1,2 +1,0 @@
-mongod --bind_ip=$IP --dbpath=data --nojournal --rest "$@" > /tmp/mongod.log 2>&1 &
-echo "MongoDB server output logged to /tmp/mongod.log"

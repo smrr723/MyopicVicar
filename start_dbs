@@ -1,5 +1,0 @@
-#!/usr/bin/env ruby
-puts "Starting MySQL"
-system "sudo /etc/init.d/mysql start"
-puts "Starting MongoDB"
-system "./mongod"
