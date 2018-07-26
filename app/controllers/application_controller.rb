@@ -17,16 +17,16 @@
 class ApplicationController < ActionController::Base
 
   protect_from_forgery :with => :reset_session
-  before_action :configure_permitted_parameters, if: :devise_controller?
-  before_action :require_login
-  before_action :load_last_stat
-  before_action :load_message_flag
+  before_filter :require_login
+  #before_filter :require_cookie_directive
+  before_filter :load_last_stat
+  before_filter :load_message_flag
   require 'record_type'
   require 'name_role'
   require 'chapman_code'
   require 'userid_role'
   require 'register_type'
- 
+
   def load_last_stat
     if session[:site_stats].blank?
       time = Time.now
@@ -54,25 +54,14 @@ class ApplicationController < ActionController::Base
   end
 
   private
-  
-  def configure_permitted_parameters
-    devise_parameter_sanitizer.permit(:sign_in) do |user_params|
-      user_params.permit(:login, :userid_detail_id, :reset_password_token, :reset_password_sent_at, :username, :password, :email)
-    end
-    devise_parameter_sanitizer.permit(:account_update) do |user_params|
-      user_params.permit(:login, :userid_detail_id, :reset_password_token, :reset_password_sent_at, :username, :password, :email)
-    end
-    devise_parameter_sanitizer.permit(:sign_up) do |user_params|
-      user_params.permit(:login, :userid_detail_id, :reset_password_token, :reset_password_sent_at, :username, :password, :email)
-    end
-  end
 
   def after_sign_in_path_for(resource_or_scope)
+    #empty current session
     cookies.signed[:Administrator] = Rails.application.config.github_issues_password
-    cookies.signed[:userid] = UseridDetail.id(current_authentication_devise_user[:userid_detail_id]).first
+    cookies.signed[:userid] = current_authentication_devise_user.userid_detail_id
     session[:userid_detail_id] = current_authentication_devise_user.userid_detail_id
     session[:devise] = current_authentication_devise_user.id
-    logger.warn "FREEREG::USER current  #{current_authentication_devise_user.username}"
+    logger.warn "FREEREG::USER current  #{current_authentication_devise_user.userid_detail_id}"
     scope = Devise::Mapping.find_scope!(resource_or_scope)
     home_path = "#{scope}_root_path"
     respond_to?(home_path, true) ? refinery.send(home_path) : main_app.new_manage_resource_path
@@ -104,14 +93,21 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  def get_user
+    user = cookies.signed[:userid]
+    user = UseridDetail.id(user).first
+    return user
+  end
+
   def get_user_info_from_userid
-    @user = cookies.signed[:userid]
+    @user = get_user
     unless @user.present?
       flash[:notice] = "You must be logged in to access that action"
       redirect_to new_search_query_path # halts request cycle
     else
       @user_id = @user.id
       @userid = @user.id
+      @user_userid = @user.userid
       @first_name = @user.person_forename
       @manager = manager?(@user)
       @roles = UseridRole::OPTIONS.fetch(@user.person_role)
@@ -120,14 +116,14 @@ class ApplicationController < ActionController::Base
 
   def  get_user_info(userid,name)
     #old version for compatibility
-    @user = cookies.signed[:userid]
+    @user = get_user
     @first_name = @user.person_forename unless @user.blank?
     @userid = @user.id
     @roles = UseridRole::OPTIONS.fetch(@user.person_role)
   end
 
   def get_userids_and_transcribers
-    @user = cookies.signed[:userid]
+    @user = get_user
     @userids = UseridDetail.all.order_by(userid_lower_case: 1)
   end
 
@@ -137,12 +133,12 @@ class ApplicationController < ActionController::Base
     redirect_to main_app.new_manage_resource_path
     return
   end
-  
+
   def log_messenger(message)
     log_message = message
     logger.warn(log_message)
   end
-  
+
   def log_missing_document(message,doc1,doc2)
     log_message = "FREEREG:PHC WARNING: aunable to find a document #{message}\n"
     log_message += "FREEREG:PHC Time.now=\t\t#{Time.now}\n"
@@ -186,6 +182,14 @@ class ApplicationController < ActionController::Base
     return
   end
 
+  def require_cookie_directive
+    #p "cookie"
+    if cookies[:cookiesDirective].blank?
+      flash[:notice] = 'This website only works if you are willing to explicitly accept cookies. If you did not see the cookie declaration you could be using an obsolete browser or a browser add on that blocks cookie messages'
+      redirect_to main_app.new_search_query_path
+    end
+  end
+
   def require_login
     if session[:userid_detail_id].nil?
       flash[:notice] = "You must be logged in to access that action"
@@ -206,7 +210,7 @@ class ApplicationController < ActionController::Base
   end
 
   def clean_session
-    
+
     session.delete(:manage_user_origin)
     session.delete(:freereg1_csv_file_id)
     session.delete(:freereg1_csv_file_name)
