@@ -249,6 +249,27 @@ class SearchRecordsController < ApplicationController
       else
         @family_head_name = @dwelling.freecen_individuals.asc(:sequence_in_household).first['forenames'] + " " + @dwelling.freecen_individuals.asc(:sequence_in_household).first['surname']
       end
+
+      #Adds the department and series codes based on the citation year
+      case @cen_year
+      when "1841" || "1851"
+        @dep_series_code = "HO 107"
+      when "1861"
+        @dep_series_code = "RG 9"
+      when "1871"
+        @dep_series_code = "RG 10"
+      when "1881"
+        @dep_series_code = "RG 11"
+      when "1891"
+        @dep_series_code = "RG 12"
+      when "1901"
+        @dep_series_code = "RG 13"
+      when "1911"
+        @dep_series_code = "RG 14"
+      else
+        @dep_series_code = nil
+      end
+
 #   ------------------------ End of fields required for citation generation ------------------------
       if params[:citation_type] == "wikitree"
         render "_search_records_freecen_citation_wikitree", :layout => false
