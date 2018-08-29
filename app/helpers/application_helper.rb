@@ -181,7 +181,7 @@ module ApplicationHelper
     </style>
     <script src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
     <script>
-        (adsbygoogle=window.adsbygoogle||[]).pauseAdRequests=1;
+        (adsbygoogle=window.adsbygoogle||[]).pauseAdRequests=0;
       </script>
 <!-- FreeCEN2 Responsive Header -->
     <ins class="adsbygoogle adSenseBanner"
