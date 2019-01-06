@@ -543,4 +543,4 @@ class UseridDetail
       self.new_transcription_agreement = 'Declined'
     end
   end
-end #end class
+end # end class
